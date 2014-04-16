@@ -89,7 +89,7 @@ class TweenRequestLogger(object):
     def __call__(self, report_time, frame=None):
         elapsed = report_time - self.start
         request = self.request
-        lines = ['request: %s %s' % (request.method, request.url)]
+        lines = list()
 
         if not self.logged_first:
             if request.method == 'POST':
@@ -111,10 +111,11 @@ class TweenRequestLogger(object):
             del frame
 
         log = self.tween.log
-        msg = '\n'.join(lines)
-        log.warning("Thread %s: Started on %.1f; "
-                    "Running for %.1f secs; %s",
-                    self.ident, self.start, elapsed, msg)
+        logger_name = "slowlog.{0}".format(request.matched_route.name)
+        page_logger = logging.getLogger(logger_name)
+        map(page_logger.addHandler, log.handlers)
+        lead = "{0} on {1}".format(request.method, request.url)
+        page_logger.warn("{0}\n{1}".format(lead, '\n'.join(lines)))
 
 
 class Hidden(object):

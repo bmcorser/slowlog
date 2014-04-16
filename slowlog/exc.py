@@ -5,8 +5,7 @@ import traceback
 import linecache
 
 
-def print_stack(f, limit,
-                file):  # @ReservedAssignment
+def print_stack(f, limit, file):  # @ReservedAssignment
     """Print the stack trace of a frame."""
     traceback.print_list(extract_stack(f, limit), file)
 
